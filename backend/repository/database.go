@@ -16,7 +16,7 @@ func GetDatabase() *sql.DB {
 		conn, err := sql.Open(
 			"mysql",
 			fmt.Sprintf(
-				"%s:%s@tcp(%s:%d)/%s",
+				"%s:%s@tcp(%s:%d)/%s?parseTime=true",
 				config.Username,
 				config.Password,
 				config.Hostname,

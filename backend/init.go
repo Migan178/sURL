@@ -17,5 +17,6 @@ func init() {
 	linkRouter := r.Group("/links")
 	{
 		linkRouter.POST("/", links.CreateLink)
+		linkRouter.GET("/:urn", links.GetLink)
 	}
 }
