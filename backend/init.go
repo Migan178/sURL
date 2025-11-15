@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/Migan178/surl/routes"
-	"github.com/Migan178/surl/routes/links"
+	"github.com/Migan178/surl/routes/api/links"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,10 +13,14 @@ func init() {
 
 	r.GET("/", routes.Root)
 	r.GET("/ping", routes.Ping)
+	r.GET("/:urn", routes.Redirect)
 
-	linkRouter := r.Group("/links")
+	apiRouter := r.Group("/api")
 	{
-		linkRouter.POST("/", links.CreateLink)
-		linkRouter.GET("/:urn", links.GetLink)
+		linkRouter := apiRouter.Group("/links")
+		{
+			linkRouter.POST("/", links.CreateLink)
+			linkRouter.GET("/:urn", links.GetLink)
+		}
 	}
 }
