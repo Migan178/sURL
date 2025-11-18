@@ -3,7 +3,7 @@ package repository
 import "time"
 
 type CreateBody struct {
-	RedirectURL string `json:"redirect_url"`
+	RedirectURL string `json:"redirect_url" form:"url"`
 }
 
 type URL struct {

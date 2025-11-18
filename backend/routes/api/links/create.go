@@ -2,9 +2,7 @@ package links
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/Migan178/surl/repository"
@@ -13,25 +11,20 @@ import (
 )
 
 func CreateLink(c *gin.Context) {
-	buf, err := io.ReadAll(c.Request.Body)
-	if err != nil {
+	var data repository.CreateBody
+
+	if err := c.ShouldBind(&data); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "failed to read post body"})
 		return
-	}
 
-	var data repository.CreateBody
-	if err = json.Unmarshal(buf, &data); err != nil {
-		fmt.Println(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "wrong post body"})
-		return
 	}
 
 	database := repository.GetDatabase()
 	urn := utils.GetRandomString(20)
 
 	row := database.QueryRow("select * from urls where urn = ?;", urn)
-	if err = row.Err(); err != nil {
+	if err := row.Err(); err != nil {
 		if err == sql.ErrNoRows {
 			urn = utils.GetRandomString(20)
 		} else {
@@ -48,7 +41,7 @@ func CreateLink(c *gin.Context) {
 		return
 	}
 
-	_, err = tx.Exec("insert into urls(urn, redirect_url) values(?, ?);", urn, data.RedirectURL)
+	resp, err := tx.Exec("insert into urls(urn, redirect_url) values(?, ?);", urn, data.RedirectURL)
 	if err != nil {
 		fmt.Println(err)
 		tx.Rollback()
@@ -57,5 +50,18 @@ func CreateLink(c *gin.Context) {
 	}
 
 	tx.Commit()
-	c.JSON(http.StatusCreated, gin.H{"urn": urn, "redirect_url": data.RedirectURL})
+
+	var createdData repository.URL
+
+	id, _ := resp.LastInsertId()
+	row = database.QueryRow("select * from urls where id = ?;", id)
+	if err = row.Scan(&createdData.ID, &createdData.URN, &createdData.RedirectURL, &createdData.CreatedAt); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error while insert data"})
+		return
+	}
+
+	fmt.Printf("%+v\n", createdData)
+
+	c.JSON(http.StatusCreated, createdData)
 }

@@ -1,0 +1,61 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+:root {
+    --default-text-color: #dedede;
+    --text-color: var(--default-text-color);
+    --bg-color: #090c16;
+    --bg2-color: #070a11;
+    --hover-color: white;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: grid;
+    font-size: 14px;
+    font-family: "Pretendard", sans-serif;
+    background-color: var(--bg2-color);
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 1.125rem;
+}
+
+main {
+    text-align: center;
+    margin: 0 auto;
+}
+
+a {
+    color: var(--text-color);
+    transition: 0.25s;
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--hover-color);
+    transition: 0.25s;
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 1.875rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}

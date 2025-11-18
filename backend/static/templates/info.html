@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>sURL</title>
+        <link rel="stylesheet" href="/styles/default.css" />
+        <link rel="stylesheet" href="/styles/info.css" />
+    </head>
+    <body>
+        <main>
+            <h1>sURL</h1>
+            <div class="information">
+                <ul>
+                    <li>
+                        <h2>해당 URL:</h2>
+                        <a href="/{{.urn}}" id="original-url">{{.urn}}</a>
+                    </li>
+                    <li>
+                        <h2>원본 URL:</h2>
+                        <a href="{{.redirect_url}}">{{.redirect_url}}</a>
+                    </li>
+                    <li>
+                        <h2>생성된 날짜:</h2>
+                        <p>{{.created_at}}</p>
+                    </li>
+                </ul>
+            </div>
+        </main>
+    </body>
+</html>

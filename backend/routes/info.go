@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Redirect(c *gin.Context) {
+func Info(c *gin.Context) {
 	var data repository.URL
 
 	urn := c.Param("urn")
@@ -20,8 +20,9 @@ func Redirect(c *gin.Context) {
 			c.HTML(http.StatusNotFound, "404.html", nil)
 			return
 		}
-		code := http.StatusInternalServerError
+
 		fmt.Println(err)
+		code := http.StatusInternalServerError
 		c.HTML(code, "error.html", gin.H{
 			"status": http.StatusText(code),
 			"code":   code,
@@ -29,5 +30,9 @@ func Redirect(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusMovedPermanently, data.RedirectURL)
+	c.HTML(http.StatusOK, "info.html", gin.H{
+		"urn":          data.URN,
+		"redirect_url": data.RedirectURL,
+		"created_at":   data.CreatedAt.Format("2006/01/02 15:04"),
+	})
 }
