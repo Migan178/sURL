@@ -1,4 +1,43 @@
 form {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
+}
+
+.form-input {
+	width: calc(0.25rem * 80);
+	box-shadow: 0 25px 50px -12px #172556;
+	margin-bottom: 0.5rem;
+	padding-inline-start: 1rem;
+}
+
+.form-input::placeholder {
+	color: #213252;
+}
+
+.form-input:focus {
+	outline: none;
+	border-color: #1f3273;
+}
+
+.form-style {
+	background-color: var(--bg-color);
+	border-radius: 0.75rem;
+	border-width: 2px;
+	border-style: solid;
+	border-color: #172556;
+	color: var(--text-color);
+	transition: 0.25s;
+	height: calc(0.25rem * 8);
+	box-shadow: 0 25px 50px -12px #172556;
+}
+
+.form-submit {
+	width: calc(0.25rem * 40);
+}
+
+.form-submit:hover {
+	background-color: #172556;
+	color: white;
+	cursor: pointer;
+	transition: 0.25s;
 }

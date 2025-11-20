@@ -1,28 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>sURL</title>
-        <link rel="stylesheet" href="styles/default.css" />
-        <link rel="stylesheet" href="styles/home.css" />
-    </head>
-    <body>
-        <main>
-            <h1>sURL</h1>
-            <h2>URL을 단축해보세요!</h2>
-            <form id="form" name="form" method="post" action="/">
-                <div class="form-input">
-                    <input
-                        type="url"
-                        name="url"
-                        placeholder="단축할 URL을 적어주세요."
-                    />
-                </div>
-                <div class="form-submit">
-                    <input type="submit" value="단축 URL 만들기" />
-                </div>
-            </form>
-        </main>
-    </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>sURL</title>
+		<link rel="stylesheet" href="styles/default.css" />
+		<link rel="stylesheet" href="styles/home.css" />
+	</head>
+	<body>
+		<main>
+			<h1>sURL</h1>
+			<h2>URL을 단축해보세요!</h2>
+			<form id="form" name="form" method="post" action="/">
+				<div>
+					<input
+						type="url"
+						name="url"
+						placeholder="단축할 URL을 적어주세요."
+						class="form-style form-input"
+					/>
+				</div>
+				<div>
+					<input
+						type="submit"
+						value="단축 URL 만들기"
+						class="form-style form-submit"
+					/>
+				</div>
+			</form>
+		</main>
+	</body>
 </html>
