@@ -37,7 +37,7 @@ form {
 
 .form-submit:hover {
 	background-color: #172556;
-	color: white;
+	color: var(--hover-color);
 	cursor: pointer;
 	transition: 0.25s;
 }

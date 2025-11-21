@@ -14,6 +14,7 @@ func init() {
 
 	r.LoadHTMLGlob("static/templates/*.html")
 	r.Static("/styles", "./static/styles")
+	r.Static("/scripts", "./static/scripts")
 
 	r.GET("/", routes.Home)
 	r.GET("/:urn", routes.Redirect)
