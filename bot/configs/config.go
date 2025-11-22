@@ -16,10 +16,15 @@ type commandConfig struct {
 	DeveloperOnlyGuildID string
 }
 
+type sURLConfig struct {
+	APIURL string
+}
+
 // MFConfig for Muffin Framework
 type MFConfig struct {
 	Bot     botConfig
 	Command commandConfig
+	SURL    sURLConfig
 }
 
 var instance *MFConfig
@@ -56,5 +61,9 @@ func setConfig(config *MFConfig) {
 
 	config.Command = commandConfig{
 		DeveloperOnlyGuildID: getValue("COMMAND_DEVELOPER_ONLY_GUILD_ID"),
+	}
+
+	config.SURL = sURLConfig{
+		APIURL: getRequiredValue("SURL_API_URL"),
 	}
 }
