@@ -17,7 +17,8 @@ type commandConfig struct {
 }
 
 type sURLConfig struct {
-	APIURL string
+	API string
+	URL string
 }
 
 // MFConfig for Muffin Framework
@@ -63,7 +64,9 @@ func setConfig(config *MFConfig) {
 		DeveloperOnlyGuildID: getValue("COMMAND_DEVELOPER_ONLY_GUILD_ID"),
 	}
 
+	url := getRequiredValue("SURL_URL")
 	config.SURL = sURLConfig{
-		APIURL: getRequiredValue("SURL_API_URL"),
+		URL: url,
+		API: fmt.Sprintf("%s/api", url),
 	}
 }

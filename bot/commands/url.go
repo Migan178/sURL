@@ -47,8 +47,20 @@ var URLCommand = &Command{
 	Run: func(inter *builders.InteractionCreate) error {
 		switch opt := inter.ApplicationCommandData().Options[0]; opt.Name {
 		case urlCommandCreate:
-			return url.Create(inter)
+			if err := inter.DeferReply(&discordgo.InteractionResponseData{
+				Flags: discordgo.MessageFlagsEphemeral,
+			}); err != nil {
+				return err
+			}
+
+			return url.Create(inter, opt.Options[0].StringValue())
 		case urlCommandGet:
+			if err := inter.DeferReply(&discordgo.InteractionResponseData{
+				Flags: discordgo.MessageFlagsEphemeral,
+			}); err != nil {
+				return err
+			}
+
 			return url.Get(inter, opt.Options[0].StringValue())
 		default:
 			return nil
