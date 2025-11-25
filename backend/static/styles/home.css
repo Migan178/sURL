@@ -41,3 +41,12 @@ form {
 	cursor: pointer;
 	transition: 0.25s;
 }
+
+#submit-btns {
+	display: flex;
+	justify-content: center;
+}
+
+#create {
+	margin-right: 1.5rem;
+}

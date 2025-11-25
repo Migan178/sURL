@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 	<head>
 		<meta charset="UTF-8" />
@@ -16,35 +16,29 @@
 					<input
 						type="url"
 						name="url"
-						placeholder="단축할 URL을 적어주세요."
+						id="url"
+						placeholder="단축하거나 찾을 URL을 적어주세요."
 						class="form-style form-input"
+						required
 					/>
 				</div>
-				<div>
-					<input
-						type="submit"
-						value="단축 URL 만들기"
-						class="form-style form-submit"
-					/>
-				</div>
-			</form>
-			<h2>단축 URL의 정보를 찾아보세요!</h2>
-			<form id="find" name="find" method="get" action="/info">
-				<div>
-					<input
-						type="url"
-						name="find-url"
-						id="find-url"
-						placeholder="찾을 URL을 적어주세요."
-						class="form-style form-input"
-					/>
-				</div>
-				<div>
-					<input
-						type="submit"
-						value="해당 URL 찾기"
-						class="form-style form-submit"
-					/>
+				<div id="submit-btns">
+					<div>
+						<input
+							type="submit"
+							value="단축 URL 만들기"
+							class="form-style form-submit"
+							id="create"
+						/>
+					</div>
+					<div>
+						<input
+							type="submit"
+							value="해당 URL 찾기"
+							class="form-style form-submit"
+							id="find"
+						/>
+					</div>
 				</div>
 			</form>
 		</main>
