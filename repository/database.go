@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/Migan178/surl/configs"
-	"github.com/Migan178/surl/utils"
+	"git.miganbox.com/migan/surl/backend/utils"
+	"git.miganbox.com/migan/surl/configs"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -17,7 +17,7 @@ var databaseInstance *SURLDatabase
 
 func GetDatabase() *SURLDatabase {
 	if databaseInstance == nil {
-		config := configs.GetConfigs().Database
+		config := configs.GetConfig().Database
 		conn, err := sql.Open(
 			"mysql",
 			fmt.Sprintf(

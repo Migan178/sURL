@@ -3,8 +3,8 @@ package commands
 import (
 	"sync"
 
-	"github.com/Migan178/surl-bot/builders"
-	"github.com/Migan178/surl-bot/configs"
+	"git.miganbox.com/migan/surl/bot/builders"
+	"git.miganbox.com/migan/surl/configs"
 	"github.com/bwmarrin/discordgo"
 )
 

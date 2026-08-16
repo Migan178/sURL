@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"github.com/Migan178/surl-bot/builders"
-	"github.com/Migan178/surl-bot/commands/subcommands/url"
+	"git.miganbox.com/migan/surl/bot/builders"
+	"git.miganbox.com/migan/surl/bot/commands/subcommands/url"
 	"github.com/bwmarrin/discordgo"
 )
 

@@ -3,8 +3,8 @@ package url
 import (
 	"fmt"
 
-	"github.com/Migan178/surl-bot/builders"
-	"github.com/Migan178/surl-bot/client"
+	"git.miganbox.com/migan/surl/bot/builders"
+	"git.miganbox.com/migan/surl/bot/client"
 )
 
 func Get(inter *builders.InteractionCreate, url string) error {

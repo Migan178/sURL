@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/Migan178/surl-bot/utils"
+	"git.miganbox.com/migan/surl/bot/utils"
 	"github.com/bwmarrin/discordgo"
 )
 

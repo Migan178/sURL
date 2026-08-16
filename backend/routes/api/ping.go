@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Migan178/surl/repository"
+	"git.miganbox.com/migan/surl/repository"
 	"github.com/gin-gonic/gin"
 )
 

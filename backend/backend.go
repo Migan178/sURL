@@ -1,24 +1,24 @@
-package main
+package backend
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
 	"io/fs"
 	"net/http"
 
-	"github.com/Migan178/surl/routes"
-	"github.com/Migan178/surl/routes/api"
-	"github.com/Migan178/surl/routes/api/links"
+	"git.miganbox.com/migan/surl/backend/routes"
+	"git.miganbox.com/migan/surl/backend/routes/api"
+	"git.miganbox.com/migan/surl/backend/routes/api/links"
+	"git.miganbox.com/migan/surl/configs"
 	"github.com/gin-gonic/gin"
 )
-
-var r *gin.Engine
 
 //go:embed static/*
 var staticFS embed.FS
 
-func init() {
-	r = gin.Default()
+func New() *http.Server {
+	r := gin.Default()
 
 	tmpl, err := template.ParseFS(staticFS, "static/templates/*.html")
 	if err != nil {
@@ -56,5 +56,10 @@ func init() {
 			linkRouter.POST("/", links.CreateLink)
 			linkRouter.GET("/:urn", links.GetLink)
 		}
+	}
+
+	return &http.Server{
+		Addr:    fmt.Sprintf(":%d", configs.GetConfig().Backend.Port),
+		Handler: r,
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/Migan178/surl-bot/configs"
+	"git.miganbox.com/migan/surl/configs"
 )
 
 type SURL struct {
@@ -31,7 +31,7 @@ func (s *SURL) GetInformation(link string) (*URL, error) {
 		return nil, err
 	}
 
-	resp, err := s.Client.Get(fmt.Sprintf("%s/links%s", configs.GetConfig().SURL.API, parsedURL.Path))
+	resp, err := s.Client.Get(fmt.Sprintf("%s/links%s", configs.GetConfig().Bot.BackendURL, parsedURL.Path))
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (s *SURL) Create(link string) (*URL, error) {
 
 	buf := bytes.NewBuffer([]byte(dataString))
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/links", configs.GetConfig().SURL.API), buf)
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/links", configs.GetConfig().Bot.BackendURL), buf)
 	if err != nil {
 		return nil, err
 	}

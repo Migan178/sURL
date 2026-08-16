@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 
-	"github.com/Migan178/surl-bot/builders"
+	"git.miganbox.com/migan/surl/bot/builders"
 	"github.com/bwmarrin/discordgo"
 )
 

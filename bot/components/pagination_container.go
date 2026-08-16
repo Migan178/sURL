@@ -3,9 +3,9 @@ package components
 import (
 	"strings"
 
-	"github.com/Migan178/surl-bot/builders"
-	"github.com/Migan178/surl-bot/commands"
-	"github.com/Migan178/surl-bot/utils"
+	"git.miganbox.com/migan/surl/bot/builders"
+	"git.miganbox.com/migan/surl/bot/commands"
+	"git.miganbox.com/migan/surl/bot/utils"
 	"github.com/bwmarrin/discordgo"
 )
 

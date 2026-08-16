@@ -8,6 +8,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var (
+	botRequired     = ""
+	backendRequired = ""
+)
+
 type databaseConfig struct {
 	Hostname     string
 	Port         int
@@ -16,12 +21,24 @@ type databaseConfig struct {
 	DatabaseName string
 }
 
-type SURLBackendConfig struct {
-	Database databaseConfig
-	Port     int
+type botConfig struct {
+	Token                       string
+	OwnerID                     string
+	BackendURL                  string
+	DeveloperOnlyCommandGuildID string
 }
 
-var instance *SURLBackendConfig
+type backendConfig struct {
+	Port int
+}
+
+type SURLConfig struct {
+	Backend  backendConfig
+	Bot      botConfig
+	Database databaseConfig
+}
+
+var instance *SURLConfig
 
 func getValue(key string) string {
 	return os.Getenv(key)
@@ -47,10 +64,10 @@ func getRequiredValueToInt(key string) int {
 	return parsedInt
 }
 
-func GetConfigs() *SURLBackendConfig {
+func GetConfig() *SURLConfig {
 	if instance == nil {
-		godotenv.Load()
-		instance = &SURLBackendConfig{
+		_ = godotenv.Load()
+		instance = &SURLConfig{
 			Database: databaseConfig{
 				Hostname:     getRequiredValue("DATABASE_HOSTNAME"),
 				Username:     getRequiredValue("DATABASE_USERNAME"),
@@ -58,7 +75,21 @@ func GetConfigs() *SURLBackendConfig {
 				DatabaseName: getRequiredValue("DATABASE_NAME"),
 				Port:         getRequiredValueToInt("DATABASE_PORT"),
 			},
-			Port: getRequiredValueToInt("PORT"),
+		}
+
+		if backendRequired == "true" {
+			instance.Backend = backendConfig{
+				Port: getRequiredValueToInt("BACKEND_PORT"),
+			}
+		}
+
+		if botRequired == "true" {
+			instance.Bot = botConfig{
+				Token:                       getRequiredValue("BOT_TOKEN"),
+				OwnerID:                     getRequiredValue("BOT_OWNER_ID"),
+				BackendURL:                  getRequiredValue("BOT_BACKEND_URL"),
+				DeveloperOnlyCommandGuildID: getValue("BOT_DEVELOPER_ONLY_COMMAND_GUILD_ID"),
+			}
 		}
 	}
 
