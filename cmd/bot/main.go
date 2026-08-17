@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"git.miganbox.com/migan/surl/bot"
+	"git.miganbox.com/migan/surl/repository"
 )
 
 var (
@@ -37,5 +38,9 @@ func main() {
 
 	if err := b.Close(); err != nil {
 		slog.Error("failed to close bot session", "err", err)
+	}
+
+	if err := repository.GetDatabase().Close(); err != nil {
+		slog.Error("failed to close database", "err", err)
 	}
 }

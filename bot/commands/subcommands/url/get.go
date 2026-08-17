@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"git.miganbox.com/migan/surl/bot/builders"
-	"git.miganbox.com/migan/surl/bot/client"
+	"git.miganbox.com/migan/surl/repository"
 )
 
 func Get(inter *builders.InteractionCreate, url string) error {
-	data, err := client.GetClient().GetInformation(url)
+	data, err := repository.GetDatabase().Find(url)
 	if err != nil {
 		return err
 	}

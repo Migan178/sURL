@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"git.miganbox.com/migan/surl/bot/builders"
-	"git.miganbox.com/migan/surl/bot/client"
 	"git.miganbox.com/migan/surl/configs"
+	"git.miganbox.com/migan/surl/repository"
 )
 
 func Create(inter *builders.InteractionCreate, url string) error {
-	createdData, err := client.GetClient().Create(url)
+	createdData, err := repository.GetDatabase().CreateLink(url)
 	if err != nil {
 		return err
 	}

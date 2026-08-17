@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"git.miganbox.com/migan/surl/backend/routes"
-	"git.miganbox.com/migan/surl/backend/routes/api/links"
 	"git.miganbox.com/migan/surl/configs"
 	"github.com/gin-gonic/gin"
 )
@@ -46,16 +45,6 @@ func New() *http.Server {
 
 	// TODO: Use json
 	r.POST("/", routes.CreateLinkWithForm)
-
-	// TODO: Delete it (#2, #4)
-	apiRouter := r.Group("/api")
-	{
-		linkRouter := apiRouter.Group("/links")
-		{
-			linkRouter.POST("/", links.CreateLink)
-			linkRouter.GET("/:urn", links.GetLink)
-		}
-	}
 
 	return &http.Server{
 		Addr:    fmt.Sprintf(":%d", configs.GetConfig().Backend.Port),
