@@ -39,12 +39,11 @@ func New() *http.Server {
 
 	r.StaticFS("/scripts", http.FS(scriptsFS))
 
+	r.POST("/", routes.CreateLink)
+
 	r.GET("/", routes.Home)
 	r.GET("/:urn", routes.Redirect)
 	r.GET("/info/:urn", routes.Info)
-
-	// TODO: Use json
-	r.POST("/", routes.CreateLinkWithForm)
 
 	return &http.Server{
 		Addr:    fmt.Sprintf(":%d", configs.GetConfig().Backend.Port),

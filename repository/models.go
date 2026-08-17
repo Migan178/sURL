@@ -1,11 +1,33 @@
 package repository
 
 import (
+	"fmt"
+	"strings"
 	"time"
+
+	"github.com/go-playground/validator/v10"
+)
+
+var validate = validator.New()
+
+var (
+	ErrInvalid = fmt.Errorf("invalid request")
 )
 
 type CreateBody struct {
-	RedirectURL string `json:"redirect_url" form:"url"`
+	RedirectURL string `form:"url"`
+}
+
+func (b *CreateBody) Normalize() {
+	b.RedirectURL = strings.TrimSpace(b.RedirectURL)
+}
+
+func (b *CreateBody) Validate() error {
+	if err := validate.Var(b.RedirectURL, "url"); err != nil {
+		return fmt.Errorf("%w: url is invalid", ErrInvalid)
+	}
+
+	return nil
 }
 
 type URL struct {
