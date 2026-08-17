@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
@@ -39,6 +40,7 @@ type SURLConfig struct {
 }
 
 var instance *SURLConfig
+var once sync.Once
 
 func getValue(key string) string {
 	return os.Getenv(key)
@@ -65,7 +67,7 @@ func getRequiredValueToInt(key string) int {
 }
 
 func GetConfig() *SURLConfig {
-	if instance == nil {
+	once.Do(func() {
 		_ = godotenv.Load()
 		instance = &SURLConfig{
 			Database: databaseConfig{
@@ -91,7 +93,7 @@ func GetConfig() *SURLConfig {
 				DeveloperOnlyCommandGuildID: getValue("BOT_DEVELOPER_ONLY_COMMAND_GUILD_ID"),
 			}
 		}
-	}
+	})
 
 	return instance
 }

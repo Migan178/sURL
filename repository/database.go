@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"sync"
 
 	"git.miganbox.com/migan/surl/backend/utils"
 	"git.miganbox.com/migan/surl/configs"
@@ -16,9 +17,10 @@ type SURLDatabase struct {
 }
 
 var databaseInstance *SURLDatabase
+var once sync.Once
 
 func GetDatabase() *SURLDatabase {
-	if databaseInstance == nil {
+	once.Do(func() {
 		config := configs.GetConfig().Database
 		conn, err := sql.Open(
 			"mysql",
@@ -35,7 +37,7 @@ func GetDatabase() *SURLDatabase {
 		}
 
 		databaseInstance = &SURLDatabase{conn}
-	}
+	})
 
 	return databaseInstance
 }
