@@ -1,7 +1,9 @@
 package url
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"git.miganbox.com/migan/surl/bot/builders"
 	"git.miganbox.com/migan/surl/configs"
@@ -9,7 +11,10 @@ import (
 )
 
 func Create(inter *builders.InteractionCreate, url string) error {
-	createdData, err := repository.GetDatabase().CreateLink(url)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	createdData, err := repository.GetDatabase().CreateLink(ctx, url)
 	if err != nil {
 		return err
 	}

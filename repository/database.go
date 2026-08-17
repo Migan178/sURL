@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -44,7 +45,7 @@ func GetDatabase() *SURLDatabase {
 	return databaseInstance
 }
 
-func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
+func (d *SURLDatabase) CreateLink(ctx context.Context, redirectURL string) (*URL, error) {
 	if redirectURL != p.Sanitize(redirectURL) {
 		return nil, ErrInvalid
 	}
@@ -53,7 +54,7 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 
 	for {
 		urn := utils.GetRandomString(20)
-		createdRow := d.db.QueryRow("insert into urls(urn, redirect_url) values(?, ?) returning id, urn, redirect_url, created_at", urn, redirectURL)
+		createdRow := d.db.QueryRowContext(ctx, "insert into urls(urn, redirect_url) values(?, ?) returning id, urn, redirect_url, created_at", urn, redirectURL)
 
 		if err := createdRow.Scan(&createdData.ID, &createdData.URN, &createdData.RedirectURL, &createdData.CreatedAt); err != nil {
 			if mysqlErr, ok := errors.AsType[*mysql.MySQLError](err); ok {
@@ -71,10 +72,10 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 	}
 }
 
-func (d *SURLDatabase) Find(urn string) (*URL, error) {
+func (d *SURLDatabase) Find(ctx context.Context, urn string) (*URL, error) {
 	var data URL
 
-	row := d.db.QueryRow("select id, urn, redirect_url, created_at from urls where urn = ?", urn)
+	row := d.db.QueryRowContext(ctx, "select id, urn, redirect_url, created_at from urls where urn = ?", urn)
 	if err := row.Scan(&data.ID, &data.URN, &data.RedirectURL, &data.CreatedAt); err != nil {
 		return nil, err
 	}

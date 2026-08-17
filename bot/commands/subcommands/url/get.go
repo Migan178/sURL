@@ -1,14 +1,19 @@
 package url
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"git.miganbox.com/migan/surl/bot/builders"
 	"git.miganbox.com/migan/surl/repository"
 )
 
 func Get(inter *builders.InteractionCreate, url string) error {
-	data, err := repository.GetDatabase().Find(url)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	data, err := repository.GetDatabase().Find(ctx, url)
 	if err != nil {
 		return err
 	}
