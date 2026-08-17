@@ -50,17 +50,10 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 		}
 	}
 
-	tx, err := d.Begin()
+	resp, err := d.Exec("insert into urls(urn, redirect_url) values(?, ?);", urn, redirectURL)
 	if err != nil {
 		return nil, err
 	}
-
-	resp, err := tx.Exec("insert into urls(urn, redirect_url) values(?, ?);", urn, redirectURL)
-	if err != nil {
-		return nil, err
-	}
-
-	tx.Commit()
 
 	var createdData URL
 
@@ -71,4 +64,8 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 	}
 
 	return &createdData, nil
+}
+
+func (d *SURLDatabase) Close() error {
+	return d.DB.Close()
 }
