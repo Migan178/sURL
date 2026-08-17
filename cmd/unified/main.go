@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,6 +14,13 @@ import (
 	"git.miganbox.com/migan/surl/backend"
 	"git.miganbox.com/migan/surl/bot"
 	"git.miganbox.com/migan/surl/repository"
+)
+
+var (
+	Version   = "0.0.0"
+	Branch    = "local"
+	Commit    = "000000"
+	UpdatedAt = "000000" // +%y%m%d
 )
 
 func main() {
@@ -30,6 +38,13 @@ func main() {
 			panic(err)
 		}
 	}()
+
+	slog.Info("surl started!",
+		"version", fmt.Sprintf("%s-bot-and-backend", Version),
+		"branch", Branch,
+		"commit", Commit,
+		"updated_at", UpdatedAt,
+	)
 
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
