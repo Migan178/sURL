@@ -2,10 +2,12 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"git.miganbox.com/migan/surl/backend/utils"
 	"git.miganbox.com/migan/surl/configs"
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -39,31 +41,26 @@ func GetDatabase() *SURLDatabase {
 }
 
 func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
-	urn := utils.GetRandomString(20)
-
-	row := d.QueryRow("select * from urls where urn = ?;", urn)
-	if err := row.Err(); err != nil {
-		if err == sql.ErrNoRows {
-			urn = utils.GetRandomString(20)
-		} else {
-			return nil, err
-		}
-	}
-
-	resp, err := d.Exec("insert into urls(urn, redirect_url) values(?, ?);", urn, redirectURL)
-	if err != nil {
-		return nil, err
-	}
-
 	var createdData URL
 
-	id, _ := resp.LastInsertId()
-	row = d.QueryRow("select * from urls where id = ?;", id)
-	if err = row.Scan(&createdData.ID, &createdData.URN, &createdData.RedirectURL, &createdData.CreatedAt); err != nil {
-		return nil, err
-	}
+	for {
+		urn := utils.GetRandomString(20)
+		createdRow := d.QueryRow("insert into urls(urn, redirect_url) values(?, ?) returning id, urn, redirect_url, created_at", urn, redirectURL)
 
-	return &createdData, nil
+		if err := createdRow.Scan(&createdData.ID, &createdData.URN, &createdData.RedirectURL, &createdData.CreatedAt); err != nil {
+			if mysqlErr, ok := errors.AsType[*mysql.MySQLError](err); ok {
+				if mysqlErr.Number == 1062 {
+					continue
+				}
+
+				return nil, err
+			}
+
+			return nil, err
+		}
+
+		return &createdData, nil
+	}
 }
 
 func (d *SURLDatabase) Close() error {
