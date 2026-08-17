@@ -2,7 +2,8 @@ package routes
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
+	"log/slog"
 	"net/http"
 
 	"git.miganbox.com/migan/surl/repository"
@@ -10,18 +11,17 @@ import (
 )
 
 func Redirect(c *gin.Context) {
-	var data repository.URL
-
 	urn := c.Param("urn")
 
-	row := repository.GetDatabase().QueryRow("select id, urn, redirect_url, created_at from urls where urn = ?;", urn)
-	if err := row.Scan(&data.ID, &data.URN, &data.RedirectURL, &data.CreatedAt); err != nil {
-		if err == sql.ErrNoRows {
+	data, err := repository.GetDatabase().Find(urn)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
 			c.HTML(http.StatusNotFound, "404.html", nil)
 			return
 		}
+
 		code := http.StatusInternalServerError
-		fmt.Println(err)
+		slog.Error("failed to redirect", "err", err)
 		c.HTML(code, "error.html", gin.H{
 			"status": http.StatusText(code),
 			"code":   code,

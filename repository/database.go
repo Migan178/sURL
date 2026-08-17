@@ -12,7 +12,7 @@ import (
 )
 
 type SURLDatabase struct {
-	*sql.DB
+	db *sql.DB
 }
 
 var databaseInstance *SURLDatabase
@@ -45,7 +45,7 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 
 	for {
 		urn := utils.GetRandomString(20)
-		createdRow := d.QueryRow("insert into urls(urn, redirect_url) values(?, ?) returning id, urn, redirect_url, created_at", urn, redirectURL)
+		createdRow := d.db.QueryRow("insert into urls(urn, redirect_url) values(?, ?) returning id, urn, redirect_url, created_at", urn, redirectURL)
 
 		if err := createdRow.Scan(&createdData.ID, &createdData.URN, &createdData.RedirectURL, &createdData.CreatedAt); err != nil {
 			if mysqlErr, ok := errors.AsType[*mysql.MySQLError](err); ok {
@@ -63,6 +63,17 @@ func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
 	}
 }
 
+func (d *SURLDatabase) Find(urn string) (*URL, error) {
+	var data URL
+
+	row := d.db.QueryRow("select id, urn, redirect_url, created_at from urls where urn = ?", urn)
+	if err := row.Scan(&data.ID, &data.URN, &data.RedirectURL, &data.CreatedAt); err != nil {
+		return nil, err
+	}
+
+	return &data, nil
+}
+
 func (d *SURLDatabase) Close() error {
-	return d.DB.Close()
+	return d.db.Close()
 }

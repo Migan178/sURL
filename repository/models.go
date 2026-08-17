@@ -1,6 +1,8 @@
 package repository
 
-import "time"
+import (
+	"time"
+)
 
 type CreateBody struct {
 	RedirectURL string `json:"redirect_url" form:"url"`
