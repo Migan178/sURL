@@ -33,7 +33,7 @@ func CreateLink(c *gin.Context) {
 		return
 	}
 
-	createdData, err := repository.GetDatabase().CreateLink(data.RedirectURL)
+	createdData, err := repository.GetDatabase().CreateLink(c.Request.Context(), data.RedirectURL)
 	if err != nil {
 		if errors.Is(err, repository.ErrInvalid) {
 			code := http.StatusBadRequest

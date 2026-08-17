@@ -13,7 +13,7 @@ import (
 func Redirect(c *gin.Context) {
 	urn := c.Param("urn")
 
-	data, err := repository.GetDatabase().Find(urn)
+	data, err := repository.GetDatabase().Find(c.Request.Context(), urn)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			c.HTML(http.StatusNotFound, "404.html", nil)
