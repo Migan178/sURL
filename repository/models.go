@@ -24,7 +24,7 @@ func (b *CreateBody) Normalize() {
 
 func (b *CreateBody) Validate() error {
 	if err := validate.Var(b.RedirectURL, "url"); err != nil {
-		return fmt.Errorf("%w: url is invalid", ErrInvalid)
+		return err
 	}
 
 	return nil

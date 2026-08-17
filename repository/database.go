@@ -10,6 +10,7 @@ import (
 	"git.miganbox.com/migan/surl/configs"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 type SURLDatabase struct {
@@ -18,6 +19,7 @@ type SURLDatabase struct {
 
 var databaseInstance *SURLDatabase
 var once sync.Once
+var p = bluemonday.StrictPolicy()
 
 func GetDatabase() *SURLDatabase {
 	once.Do(func() {
@@ -43,6 +45,10 @@ func GetDatabase() *SURLDatabase {
 }
 
 func (d *SURLDatabase) CreateLink(redirectURL string) (*URL, error) {
+	if redirectURL != p.Sanitize(redirectURL) {
+		return nil, ErrInvalid
+	}
+
 	var createdData URL
 
 	for {
@@ -72,6 +78,8 @@ func (d *SURLDatabase) Find(urn string) (*URL, error) {
 	if err := row.Scan(&data.ID, &data.URN, &data.RedirectURL, &data.CreatedAt); err != nil {
 		return nil, err
 	}
+
+	data.RedirectURL = p.Sanitize(data.RedirectURL)
 
 	return &data, nil
 }

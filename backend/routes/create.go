@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -34,6 +35,15 @@ func CreateLink(c *gin.Context) {
 
 	createdData, err := repository.GetDatabase().CreateLink(data.RedirectURL)
 	if err != nil {
+		if errors.Is(err, repository.ErrInvalid) {
+			code := http.StatusBadRequest
+			c.HTML(code, "error.html", gin.H{
+				"status": http.StatusText(code),
+				"code":   code,
+			})
+			return
+		}
+
 		slog.Error("failed to create short url", "err", err)
 		code := http.StatusInternalServerError
 		c.HTML(code, "error.html", gin.H{
