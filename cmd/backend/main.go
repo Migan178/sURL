@@ -46,12 +46,10 @@ func main() {
 	defer cancel()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		// TODO: Use slog
-		fmt.Println(err)
+		slog.Error("failed to shutdown http server", "err", err)
 	}
 
 	if err := repository.GetDatabase().Close(); err != nil {
-		// TODO: Use slog
-		fmt.Println(err)
+		slog.Error("failed to close database", "err", err)
 	}
 }

@@ -31,9 +31,11 @@ func main() {
 		"updated_at", UpdatedAt,
 	)
 
-	defer b.Close()
-
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+
+	if err := b.Close(); err != nil {
+		slog.Error("failed to close bot session", "err", err)
+	}
 }

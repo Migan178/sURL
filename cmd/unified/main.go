@@ -31,8 +31,6 @@ func main() {
 		panic(err)
 	}
 
-	defer b.Close()
-
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			panic(err)
@@ -53,13 +51,15 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	if err := b.Close(); err != nil {
+		slog.Error("failed to close bot session", "err", err)
+	}
+
 	if err := srv.Shutdown(ctx); err != nil {
-		// TODO: Use slog
-		fmt.Println(err)
+		slog.Error("failed to shutdown http server", "err", err)
 	}
 
 	if err := repository.GetDatabase().Close(); err != nil {
-		// TODO: Use slog
-		fmt.Println(err)
+		slog.Error("failed to close database", "err", err)
 	}
 }
