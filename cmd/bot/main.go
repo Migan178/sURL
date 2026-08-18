@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -21,7 +22,7 @@ var (
 func main() {
 	b := bot.New()
 
-	if err := b.Open(); err != nil {
+	if err := b.Open(context.Background()); err != nil {
 		panic(err)
 	}
 
@@ -36,9 +37,7 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
-	if err := b.Close(); err != nil {
-		slog.Error("failed to close bot session", "err", err)
-	}
+	b.Close(context.Background())
 
 	if err := repository.GetDatabase().Close(); err != nil {
 		slog.Error("failed to close database", "err", err)

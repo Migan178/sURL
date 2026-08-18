@@ -1,73 +1,54 @@
 package commands
 
 import (
-	"git.miganbox.com/migan/surl/bot/builders"
 	"git.miganbox.com/migan/surl/bot/commands/subcommands/url"
-	"github.com/bwmarrin/discordgo"
+	"git.miganbox.com/migan/surl/bot/loader"
+	"github.com/disgoorg/disgo/discord"
+	"github.com/disgoorg/disgo/handler"
+	"github.com/disgoorg/disgo/handler/middleware"
 )
 
-var (
-	urlCommandGet    = "확인"
-	urlCommandCreate = "생성"
-)
+func init() {
+	const (
+		urlCommandGet    = "확인"
+		urlCommandCreate = "생성"
+	)
 
-var URLCommand = &Command{
-	ApplicationCommand: &discordgo.ApplicationCommand{
+	loader.Loader().RegisterCommand(discord.SlashCommandCreate{
 		Name:        "url",
 		Description: "asdf",
-		Options: []*discordgo.ApplicationCommandOption{
-			{
-				Type:        discordgo.ApplicationCommandOptionSubCommand,
-				Name:        urlCommandGet,
-				Description: "해당 단축 URL의 정보를 확인해요.",
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
-						Name:        "url",
-						Description: "정보를 확인할 단축 URL를 입력해 주세요.",
-						Required:    true,
-					},
-				},
-			},
-			{
-				Type:        discordgo.ApplicationCommandOptionSubCommand,
+		Options: []discord.ApplicationCommandOption{
+			discord.ApplicationCommandOptionSubCommand{
 				Name:        urlCommandCreate,
 				Description: "단축 URL를 생성해요.",
-				Options: []*discordgo.ApplicationCommandOption{
-					{
-						Type:        discordgo.ApplicationCommandOptionString,
+				Options: []discord.ApplicationCommandOption{
+					discord.ApplicationCommandOptionString{
 						Name:        "url",
 						Description: "단축할 URL를 입력해 주세요.",
 						Required:    true,
 					},
 				},
 			},
+			discord.ApplicationCommandOptionSubCommand{
+				Name:        urlCommandGet,
+				Description: "해당 단축 URL의 정보를 확인해요.",
+				Options: []discord.ApplicationCommandOption{
+					discord.ApplicationCommandOptionString{
+						Name:        "url",
+						Description: "정보를 확인할 단축 URL를 입력해 주세요.",
+						Required:    true,
+					},
+				},
+			},
 		},
-	},
-	Run: func(inter *builders.InteractionCreate) error {
-		switch opt := inter.ApplicationCommandData().Options[0]; opt.Name {
-		case urlCommandCreate:
-			if err := inter.DeferReply(&discordgo.InteractionResponseData{
-				Flags: discordgo.MessageFlagsEphemeral,
-			}); err != nil {
-				return err
-			}
+	})
 
-			return url.Create(inter, opt.Options[0].StringValue())
-		case urlCommandGet:
-			if err := inter.DeferReply(&discordgo.InteractionResponseData{
-				Flags: discordgo.MessageFlagsEphemeral,
-			}); err != nil {
-				return err
-			}
+	loader.Loader().RegisterHandler(func(r handler.Router) {
+		r.Use(middleware.Defer(discord.InteractionTypeApplicationCommand, false, true))
 
-			return url.Get(inter, opt.Options[0].StringValue())
-		default:
-			return nil
-		}
-	},
-}
-
-func init() {
-	GetDiscommand().LoadCommand(URLCommand)
+		r.Route("/url", func(r handler.Router) {
+			r.SlashCommand("/"+urlCommandCreate, url.Create)
+			r.SlashCommand("/"+urlCommandGet, url.Get)
+		})
+	})
 }

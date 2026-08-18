@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/disgoorg/snowflake/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -23,10 +24,10 @@ type databaseConfig struct {
 }
 
 type botConfig struct {
-	Token                       string
-	OwnerID                     string
-	BackendURL                  string
-	DeveloperOnlyCommandGuildID string
+	Token                 string
+	OwnerID               snowflake.ID
+	BackendURL            string
+	DevOnlyCommandGuildID snowflake.ID
 }
 
 type backendConfig struct {
@@ -87,10 +88,9 @@ func GetConfig() *SURLConfig {
 
 		if botRequired == "true" {
 			instance.Bot = botConfig{
-				Token:                       getRequiredValue("BOT_TOKEN"),
-				OwnerID:                     getRequiredValue("BOT_OWNER_ID"),
-				BackendURL:                  getRequiredValue("BOT_BACKEND_URL"),
-				DeveloperOnlyCommandGuildID: getValue("BOT_DEVELOPER_ONLY_COMMAND_GUILD_ID"),
+				Token:      getRequiredValue("BOT_TOKEN"),
+				OwnerID:    snowflake.MustParse(getRequiredValue("BOT_OWNER_ID")),
+				BackendURL: getRequiredValue("BOT_BACKEND_URL"),
 			}
 		}
 	})

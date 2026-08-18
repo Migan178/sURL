@@ -27,7 +27,7 @@ func main() {
 	b := bot.New()
 	srv := backend.New()
 
-	if err := b.Open(); err != nil {
+	if err := b.Open(context.Background()); err != nil {
 		panic(err)
 	}
 
@@ -51,9 +51,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if err := b.Close(); err != nil {
-		slog.Error("failed to close bot session", "err", err)
-	}
+	b.Close(ctx)
 
 	if err := srv.Shutdown(ctx); err != nil {
 		slog.Error("failed to shutdown http server", "err", err)

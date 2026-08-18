@@ -1,61 +1,46 @@
 package bot
 
 import (
-	"git.miganbox.com/migan/surl/bot/commands"
-	_ "git.miganbox.com/migan/surl/bot/components"
-	"git.miganbox.com/migan/surl/bot/handler"
-	_ "git.miganbox.com/migan/surl/bot/modals"
+	"context"
+
+	_ "git.miganbox.com/migan/surl/bot/commands"
+	"git.miganbox.com/migan/surl/bot/loader"
 	"git.miganbox.com/migan/surl/configs"
-	"github.com/bwmarrin/discordgo"
+	"github.com/disgoorg/disgo"
+	"github.com/disgoorg/disgo/bot"
+	"github.com/disgoorg/disgo/gateway"
 )
 
 type Bot struct {
-	s                 *discordgo.Session
-	globalCmds        []*discordgo.ApplicationCommand
-	developerOnlyCmds []*discordgo.ApplicationCommand
+	s *bot.Client
 }
 
 func New() *Bot {
-	s, _ := discordgo.New("Bot " + configs.GetConfig().Bot.Token)
+	s, _ := disgo.New(configs.GetConfig().Bot.Token,
+		bot.WithGatewayConfigOpts(
+			gateway.WithIntents(
+				gateway.IntentGuilds,
+			),
+		),
+		bot.WithEventListeners(loader.Loader().Router()),
+	)
 
-	// Handler
-	go s.AddHandler(handler.InteractionCreate)
-
-	var globalCmds []*discordgo.ApplicationCommand
-	var developerOnlyCmds []*discordgo.ApplicationCommand
-	for _, cmd := range commands.GetDiscommand().Commands {
-		if cmd.Flags&commands.CommandFlagsIsDeveloperOnlyCommand != 0 {
-			developerOnlyCmds = append(developerOnlyCmds, cmd.ApplicationCommand)
-			continue
-		}
-
-		globalCmds = append(globalCmds, cmd.ApplicationCommand)
-	}
-
-	return &Bot{s, globalCmds, developerOnlyCmds}
+	return &Bot{s}
 }
 
-func (b *Bot) Open() error {
-	if err := b.s.Open(); err != nil {
+func (b *Bot) Open(ctx context.Context) error {
+	if err := b.s.OpenGateway(ctx); err != nil {
 		return err
 	}
 
-	_, err := b.s.ApplicationCommandBulkOverwrite(b.s.State.User.ID, "", b.globalCmds)
+	_, err := b.s.Rest.SetGlobalCommands(b.s.ApplicationID, loader.Loader().Commands())
 	if err != nil {
 		return err
-	}
-
-	developerOnlyCommandGuildID := configs.GetConfig().Bot.DeveloperOnlyCommandGuildID
-	if len(b.developerOnlyCmds) != 0 && developerOnlyCommandGuildID != "" {
-		_, err = b.s.ApplicationCommandBulkOverwrite(b.s.State.User.ID, developerOnlyCommandGuildID, b.developerOnlyCmds)
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil
 }
 
-func (b *Bot) Close() error {
-	return b.s.Close()
+func (b *Bot) Close(ctx context.Context) {
+	b.s.Close(ctx)
 }
